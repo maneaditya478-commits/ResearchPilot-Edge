@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-22 20:16:02",
+  "timestamp": "2026-09-22 20:29:00",
   "hardware": {
     "os": "Windows",
     "os_release": "11",
@@ -9,19 +9,27 @@
     "is_arm64": false,
     "is_snapdragon_detected": false,
     "total_ram_gb": 13.86,
-    "available_ram_gb": 3.55,
+    "available_ram_gb": 1.86,
     "cpu_physical_cores": 8,
     "cpu_logical_cores": 16,
     "onnx_execution_providers": [
       "AzureExecutionProvider",
       "CPUExecutionProvider"
     ],
+    "qnn_provider_installed": "UNAVAILABLE",
+    "qnn_model_execution": "UNAVAILABLE",
+    "qnn_execution_reason": "QNNExecutionProvider is not registered in this ONNX Runtime build.",
+    "directml_provider_installed": "UNAVAILABLE",
+    "directml_model_execution": "UNAVAILABLE",
+    "directml_execution_reason": "DmlExecutionProvider is not registered in this ONNX Runtime build.",
+    "cpu_provider_installed": "AVAILABLE",
     "pytorch_backends": [
       "CPU"
     ],
     "active_backend": "ONNX Runtime (x86_64 SIMD CPU)",
     "backend_description": "Optimized multi-threaded CPU execution using x86_64 SIMD vector extensions.",
     "snapdragon_npu_ready": false,
+    "gpu_acceleration_ready": false,
     "qualcomm_ai_hub_ready": false
   },
   "metrics": {
@@ -29,40 +37,49 @@
       "total_pages_processed": 10,
       "total_chunks_created": 60,
       "total_characters": 21368,
-      "latency_ms": 1.92,
-      "throughput_pages_per_sec": 5196.1,
-      "throughput_chars_per_sec": 11103058.5,
-      "ram_delta_mb": 0.08
+      "latency_ms": 1.76,
+      "throughput_pages_per_sec": 5675.6,
+      "throughput_chars_per_sec": 12127725.0,
+      "ram_delta_mb": 0.15
     },
     "embeddings": {
       "backend": "edge_deterministic_vectorizer",
       "embedding_dimension": 384,
       "total_texts_embedded": 12,
-      "total_latency_ms": 1.15,
-      "avg_latency_per_item_ms": 0.1,
-      "throughput_items_per_sec": 10394.8,
+      "total_latency_ms": 0.71,
+      "avg_latency_per_item_ms": 0.06,
+      "throughput_items_per_sec": 12000.0,
       "ram_delta_mb": 0.01
     },
     "vector_retrieval": {
       "total_indexed_chunks": 50,
       "queries_executed": 3,
-      "avg_retrieval_latency_ms": 0.17,
-      "min_retrieval_latency_ms": 0.09,
-      "max_retrieval_latency_ms": 0.32
+      "avg_retrieval_latency_ms": 0.08,
+      "min_retrieval_latency_ms": 0.05,
+      "max_retrieval_latency_ms": 0.13
+    },
+    "model_loading": {
+      "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+      "backend_name": "Edge Synthesizer (ONNX Runtime (x86_64 SIMD CPU))",
+      "load_time_seconds": 0.001,
+      "status": "LOADED"
     },
     "inference": {
       "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
       "backend_name": "Edge Synthesizer (ONNX Runtime (x86_64 SIMD CPU))",
       "iterations": 3,
+      "time_to_first_token_ms": 5.0,
       "avg_latency_ms": 5.0,
-      "avg_tokens_per_sec": 13200.0,
+      "avg_tokens_per_sec": 13000.0,
       "is_hardware_accelerated": false
     },
     "end_to_end_rag": {
       "iterations": 3,
-      "avg_end_to_end_latency_ms": 1.78,
-      "min_latency_ms": 0.62,
-      "max_latency_ms": 3.68
+      "avg_retrieval_latency_ms": 0.0,
+      "avg_inference_latency_ms": 5.0,
+      "avg_end_to_end_latency_ms": 0.84,
+      "min_latency_ms": 0.31,
+      "max_latency_ms": 1.9
     }
   }
 }

@@ -1,14 +1,22 @@
-# Privacy & Offline Security Architecture — ResearchPilot Edge
+# Privacy & Local Data Sovereignty — ResearchPilot Edge
 
-## 1. Core Security Principle
+## 1. Core Privacy Architecture
 
-> **"User documents should remain on the user's computer whenever possible."**
+ResearchPilot Edge is designed to prioritize data privacy and local execution:
 
-ResearchPilot Edge is architected from the ground up to eliminate cloud transmission vulnerabilities:
+- **Local Document Processing**: Ingestion, text extraction, chunking, and embedding generation occur strictly on the local machine.
+- **No Mandatory Cloud API Dependency**: The application operates completely offline without requiring OpenAI, Anthropic, or external cloud API subscriptions.
+- **Local Vector Storage**: Chunk vectors and metadata are stored in a local FAISS index on the host drive.
+- **No Application-Level Telemetry by Default**: The core application does not transmit document contents, query prompts, or generated answers to remote cloud endpoints.
+- **User Data Control**: Users retain full control to inspect, delete specific indexed files, or perform a complete local data purge at any time.
+
+---
+
+## 2. On-Device Boundary
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
-│                 HOST PC SECURITY BOUNDARY                   │
+│                 LOCAL HOST SECURITY BOUNDARY                │
 │                                                             │
 │   Uploaded Research Papers (PDF/TXT/DOCX)                   │
 │         ↓                                                   │
@@ -20,20 +28,18 @@ ResearchPilot Edge is architected from the ground up to eliminate cloud transmis
 │         ↓                                                   │
 │   Snapdragon / ONNX / Local LLM Inference Engine            │
 │                                                             │
-│   ❌ ZERO External API Telemetry                            │
-│   ❌ ZERO Remote Cloud Transmission                         │
-│   ❌ ZERO Third-Party Data Retention                        │
+│   ✔ No application-level telemetry by default               │
+│   ✔ Documents are processed locally                         │
+│   ✔ No cloud API is required for core workflow              │
+│   ✔ Local vector storage is used                            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Security Guarantees & Verification
+## 3. Transparency & Deletion
 
-1. **Air-Gapped Operation**: Once models are cached locally, ResearchPilot Edge requires zero active internet connection.
-2. **Local Storage Transparency**:
-   - Uploads stored in `data/uploads/` (User local directory).
-   - Vector index stored in `data/vector_store/faiss_index.bin`.
-   - Chunk metadata stored in `data/vector_store/chunks_metadata.json`.
-3. **Data Deletion Rights**: Users can instantly delete individual documents or trigger an **Emergency Data Purge** to erase all vectors and uploads from memory and disk.
-4. **Zero Cloud API Mandatory Dependencies**: Works without OpenAI, Anthropic, Google, or any remote subscription.
+1. **Storage Locations**:
+   - `data/uploads/`: Raw uploaded document files.
+   - `data/vector_store/`: FAISS index binary (`faiss_index.bin`) and metadata JSON (`chunks_metadata.json`).
+2. **Data Purging**: Users can click the **Data Purge** button in the Privacy Hub to permanently delete all uploaded files and index databases from the local filesystem.

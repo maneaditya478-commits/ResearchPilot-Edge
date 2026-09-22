@@ -23,50 +23,48 @@ def main():
     args = parser.parse_args()
 
     print("=" * 70)
-    print(" ResearchPilot Edge — Snapdragon AI Lab Challenge Benchmark Suite")
+    print(" ResearchPilot Edge -- Performance Benchmark Suite")
     print("=" * 70)
 
     runner = BenchmarkRunner()
     results = runner.run_full_suite(sample_size=args.sample_size)
 
-    print("\n--- System & Hardware Detection ---")
     hw = results["hardware"]
-    print(f"OS: {hw['os']} ({hw['os_release']}) | Arch: {hw['architecture']}")
+    m = results["metrics"]
+
+    # Extract metrics for standardized summary
+    emb_lat = m.get("embeddings", {}).get("avg_latency_per_item_ms", "N/A")
+    ret_lat = m.get("vector_retrieval", {}).get("avg_retrieval_latency_ms", "N/A")
+    ttft = m.get("inference", {}).get("time_to_first_token_ms", "N/A")
+    tps = m.get("inference", {}).get("avg_tokens_per_sec", "N/A")
+    rag_lat = m.get("end_to_end_rag", {}).get("avg_end_to_end_latency_ms", "N/A")
+
+    val_status = "Snapdragon NPU Verified" if hw.get("snapdragon_npu_ready") else "Requires Snapdragon hardware validation"
+
+    print("\n" + "=" * 40)
+    print("ResearchPilot Edge Snapdragon Report")
+    print("=" * 40)
+    print(f"Hardware: {hw['os']} ({hw['os_release']})")
+    print(f"Architecture: {hw['architecture'].upper()}")
     print(f"Processor: {hw['processor']}")
-    print(f"Detected Active Backend: {hw['active_backend']}")
-    print(f"Snapdragon NPU Ready: {'YES' if hw['snapdragon_npu_ready'] else 'NO (Requires Qualcomm QNN EP / Snapdragon Target)'}")
-    print(f"Available ONNX Providers: {', '.join(hw['onnx_execution_providers'])}")
+    print(f"QNN Provider: {hw.get('qnn_provider_installed', 'UNAVAILABLE')}")
+    print(f"QNN Model Execution: {hw.get('qnn_model_execution', 'UNAVAILABLE')}")
+    print(f"DirectML: {hw.get('directml_provider_installed', 'UNAVAILABLE')}")
+    print(f"CPU: {hw.get('cpu_provider_installed', 'AVAILABLE')}")
+    print(f"Embedding: {emb_lat} ms/chunk")
+    print(f"Retrieval: {ret_lat} ms")
+    print(f"TTFT: {ttft} ms")
+    print(f"Tokens/sec: {tps}")
+    print(f"Total RAG Latency: {rag_lat} ms")
+    print(f"RAM: {hw['total_ram_gb']} GB")
+    print(f"CPU: {hw['cpu_physical_cores']} physical / {hw['cpu_logical_cores']} logical cores")
+    print(f"Validation Status: {val_status}")
+    print("=" * 40)
 
-    print("\n--- Benchmark Summary Metrics ---")
-    metrics = results["metrics"]
-    
-    if "document_ingestion" in metrics:
-        ing = metrics["document_ingestion"]
-        print(f"[Ingestion]  {ing['throughput_pages_per_sec']} pages/sec ({ing['latency_ms']} ms for {ing['total_pages_processed']} pages)")
-    
-    if "embeddings" in metrics:
-        emb = metrics["embeddings"]
-        print(f"[Embedding]  {emb['avg_latency_per_item_ms']} ms/chunk ({emb['throughput_items_per_sec']} chunks/sec)")
-        print(f"             Backend: {emb['backend']}")
-    
-    if "vector_retrieval" in metrics:
-        vr = metrics["vector_retrieval"]
-        print(f"[Retrieval]  Avg: {vr['avg_retrieval_latency_ms']} ms | Min: {vr['min_retrieval_latency_ms']} ms")
-    
-    if "inference" in metrics:
-        inf = metrics["inference"]
-        print(f"[Inference]  Avg Latency: {inf['avg_latency_ms']} ms | Tokens/sec: {inf['avg_tokens_per_sec']}")
-        print(f"             Model: {inf['model_name']} | Backend: {inf['backend_name']}")
-    
-    if "end_to_end_rag" in metrics:
-        rag = metrics["end_to_end_rag"]
-        print(f"[End-to-End] Avg Total Latency: {rag['avg_end_to_end_latency_ms']} ms")
-
-    print("\n" + "=" * 70)
-    print(f"Detailed logs exported to:")
+    print(f"\nBenchmark reports saved to:")
     print(f"  JSON: benchmarks/benchmark_results.json")
     print(f"  CSV:  benchmarks/benchmark_results.csv")
-    print("=" * 70)
+    print(f"  MD:   benchmarks/benchmark_report.md")
 
 if __name__ == "__main__":
     main()

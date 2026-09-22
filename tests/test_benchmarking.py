@@ -1,5 +1,5 @@
 """
-Unit tests for benchmark execution and metric serialization.
+Unit tests for benchmark execution and metric serialization (JSON, CSV, MD).
 """
 
 import tempfile
@@ -21,12 +21,14 @@ def test_benchmark_runner_full_suite():
         assert "document_ingestion" in metrics
         assert "embeddings" in metrics
         assert "vector_retrieval" in metrics
+        assert "model_loading" in metrics
         assert "inference" in metrics
         assert "end_to_end_rag" in metrics
 
         # Verify export files exist
         assert (temp_dir / "benchmark_results.json").exists()
         assert (temp_dir / "benchmark_results.csv").exists()
+        assert (temp_dir / "benchmark_report.md").exists()
 
     finally:
         shutil.rmtree(temp_dir)

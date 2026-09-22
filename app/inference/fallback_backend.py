@@ -51,38 +51,61 @@ class DeterministicLocalInferenceEngine(InferenceEngine):
                 is_fallback=True
             )
 
-        # Extract most relevant sentences and synthesize an academic response
-        query_words = set(re.findall(r'\b[a-zA-Z0-9_\-]{3,}\b', prompt.lower()))
+        STOP_WORDS = {
+            "what", "where", "when", "which", "who", "whom", "whose", "why", "how",
+            "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "with",
+            "by", "about", "against", "between", "into", "through", "during", "before",
+            "after", "above", "below", "from", "up", "down", "out", "off", "over", "under",
+            "again", "further", "then", "once", "here", "there", "all", "any", "both", "each",
+            "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own",
+            "same", "so", "than", "too", "very", "can", "will", "just", "should", "now",
+            "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "do",
+            "does", "did", "doing", "would", "could", "used", "using", "uses"
+        }
+        query_words = {w for w in re.findall(r'\b[a-zA-Z0-9_\-]{2,}\b', prompt.lower()) if w not in STOP_WORDS}
         paragraphs = [p.strip() for p in context.split("\n\n") if p.strip()]
         
         scored_sentences = []
         for p in paragraphs:
-            sentences = re.split(r'(?<=[.!?])\s+', p)
+            # Strip source header lines
+            lines = [line.strip() for line in p.split('\n') if not line.startswith('[Source')]
+            clean_para = " ".join(lines)
+            sentences = re.split(r'(?<=[.!?])\s+', clean_para)
             for s in sentences:
                 s_clean = s.strip()
-                if len(s_clean) < 20:
+                if len(s_clean) < 15:
                     continue
                 s_lower = s_clean.lower()
-                matches = sum(1 for w in query_words if w in s_lower)
-                if matches > 0:
-                    scored_sentences.append((matches, s_clean))
+                s_words = set(re.findall(r'\b[a-zA-Z0-9_\-]{2,}\b', s_lower))
+                
+                # Check exact and morphological prefix matches
+                matched_count = 0
+                for qw in query_words:
+                    for sw in s_words:
+                        if qw == sw or (len(qw) >= 4 and len(sw) >= 4 and qw[:min(len(qw), len(sw), 5)] == sw[:min(len(qw), len(sw), 5)]):
+                            matched_count += 1
+                            break
+                            
+                if matched_count > 0:
+                    scored_sentences.append((matched_count, s_clean))
 
         scored_sentences.sort(key=lambda x: x[0], reverse=True)
-        top_sentences = [s for _, s in scored_sentences[:5]]
+        top_sentences = [s for matches, s in scored_sentences if matches >= 1][:5]
 
         if top_sentences:
             core_content = " ".join(top_sentences)
             answer = (
                 f"Based on the retrieved research context: {core_content}\n\n"
-                f"**Key Takeaway**: The findings directly correlate with the inquiry regarding {prompt.strip('.')} "
-                f"as detailed in the indexed document segments."
+                f"**Key Takeaway**: The findings directly address the inquiry regarding {prompt.strip('.')} "
+                f"as detailed in the cited document segments."
             )
             confidence = min(0.95, 0.65 + (len(top_sentences) * 0.06))
         else:
-            # Fallback to first high-salience paragraph
-            fallback_para = paragraphs[0] if paragraphs else context[:300]
-            answer = f"According to the ingested document text:\n\n{fallback_para}"
-            confidence = 0.70
+            answer = (
+                f"The requested information regarding '{prompt.strip()}' could not be found in the indexed documents. "
+                "No matching facts or relevant evidence were identified in the retrieved context."
+            )
+            confidence = 0.20
 
         elapsed_ms = max(5.0, (time.time() - start_time) * 1000)
         token_count = len(answer.split())

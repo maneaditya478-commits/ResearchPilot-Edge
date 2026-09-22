@@ -12,8 +12,8 @@ from app.backend.service import service
 
 def render_privacy():
     """Renders privacy transparency report and local storage inspector."""
-    st.markdown("### 🔒 Privacy & Offline Architecture Hub")
-    st.markdown("ResearchPilot Edge enforces complete data sovereignty: your research documents never leave your PC.")
+    st.markdown("### 🔒 Privacy & Local Data Sovereignty Hub")
+    st.markdown("ResearchPilot Edge is built to keep your research documents on your local computer.")
 
     col1, col2 = st.columns(2)
     with col1:
@@ -23,10 +23,10 @@ def render_privacy():
                 <div class="summary-heading" style="color: #10b981;">🛡️ Architectural Privacy Guarantees</div>
                 <div class="summary-body">
                     <ul>
-                        <li><b>Zero Mandatory Cloud Egress</b>: All text extraction, chunking, embedding generation, and LLM inference execute locally on the host device.</li>
-                        <li><b>Local Vector Database</b>: Vectors are stored in a local binary FAISS flat index on the host SSD.</li>
-                        <li><b>No External API Telemetry</b>: Does not transmit documents to OpenAI, Anthropic, Google, or any remote server.</li>
-                        <li><b>Complete User Deletion Rights</b>: You can instantly purge any individual document or clear the entire database.</li>
+                        <li><b>No application-level telemetry by default</b>: Your documents and queries are not sent to any remote monitoring servers.</li>
+                        <li><b>Documents are processed locally</b>: Ingestion, parsing, and chunking happen entirely in memory on this machine.</li>
+                        <li><b>No cloud API is required for core workflow</b>: Operates independently of external cloud subscriptions.</li>
+                        <li><b>Local vector storage is used</b>: Vectors and citations are stored strictly in local application files.</li>
                     </ul>
                 </div>
             </div>
@@ -41,9 +41,9 @@ def render_privacy():
                 <div class="summary-heading" style="color: #38bdf8;">⚙️ On-Device Security Boundary</div>
                 <div class="summary-body">
                     <ul>
-                        <li><b>Air-Gapped Operation</b>: Operates seamlessly in offline mode without internet connection.</li>
-                        <li><b>Local Sandboxed Processing</b>: Document parsing runs in standard user-space memory.</li>
-                        <li><b>Traceable Citations</b>: Every generative output links directly to on-disk chunk offsets to prevent hallucination.</li>
+                        <li><b>Offline Capability</b>: The core RAG workflow functions when offline without active network connectivity.</li>
+                        <li><b>User Data Deletion</b>: You can remove individual documents or trigger a full data purge at any time.</li>
+                        <li><b>Verifiable Citations</b>: Generated answers link to on-disk chunk offsets for factual traceability.</li>
                     </ul>
                 </div>
             </div>
@@ -54,7 +54,6 @@ def render_privacy():
     st.markdown("---")
     st.markdown("#### 📁 Local File Storage Inspector")
     
-    # Calculate storage sizes
     def get_dir_size(path: Path) -> int:
         return sum(f.stat().st_size for f in path.glob("**/*") if f.is_file())
 
@@ -66,13 +65,13 @@ def render_privacy():
             "Storage Location": "Uploads Directory (`data/uploads`)",
             "File Count": len(list(UPLOADS_DIR.glob("*"))),
             "Disk Size": f"{uploads_size / 1024:.2f} KB",
-            "Privacy Level": "Encrypted Local Storage"
+            "Storage Type": "Local File Storage"
         },
         {
             "Storage Location": "Vector Store (`data/vector_store`)",
             "File Count": len(list(VECTOR_STORE_DIR.glob("*"))),
             "Disk Size": f"{vector_size / 1024:.2f} KB",
-            "Privacy Level": "Binary Vector Index (Local)"
+            "Storage Type": "Local FAISS Binary Index"
         }
     ])
     st.dataframe(storage_df, use_container_width=True, hide_index=True)
@@ -81,5 +80,5 @@ def render_privacy():
     
     if st.button("🗑️ Emergency Data Purge (Delete All Documents & Indices)", type="primary"):
         service.clear_all()
-        st.success("All local uploads, vector indices, and conversation histories have been completely purged.")
+        st.success("All local uploads, vector indices, and conversation histories have been purged.")
         st.rerun()
