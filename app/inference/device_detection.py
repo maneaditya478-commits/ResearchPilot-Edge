@@ -29,12 +29,21 @@ class DeviceDetector:
         os_release = platform.release()
         os_version = platform.version()
         
-        # Memory Info
-        mem = psutil.virtual_memory()
-        total_ram_gb = round(mem.total / (1024 ** 3), 2)
-        available_ram_gb = round(mem.available / (1024 ** 3), 2)
-        cpu_cores_physical = psutil.cpu_count(logical=False) or 1
-        cpu_cores_logical = psutil.cpu_count(logical=True) or 1
+        # Memory & CPU Info (Safe container fallback)
+        try:
+            mem = psutil.virtual_memory()
+            total_ram_gb = round(mem.total / (1024 ** 3), 2)
+            available_ram_gb = round(mem.available / (1024 ** 3), 2)
+        except Exception:
+            total_ram_gb = 8.0
+            available_ram_gb = 4.0
+
+        try:
+            cpu_cores_physical = psutil.cpu_count(logical=False) or 2
+            cpu_cores_logical = psutil.cpu_count(logical=True) or 2
+        except Exception:
+            cpu_cores_physical = 2
+            cpu_cores_logical = 2
 
         # Detect Snapdragon / Qualcomm processor keywords
         is_arm64 = machine_arch in ("arm64", "aarch64") or "arm" in processor_raw.lower()

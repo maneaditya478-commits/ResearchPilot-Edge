@@ -4,6 +4,9 @@
 
 -r requirements.txt
 
+# Binary Vector Search (Optional Local Boost)
+faiss-cpu>=1.8.0
+
 # Neural Network Frameworks & ONNX Hardware Execution
 torch>=2.2.0
 transformers>=4.40.0

@@ -13,7 +13,29 @@ from pydantic import BaseModel, Field
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 APP_DIR = BASE_DIR / "app"
 
-IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
+def _is_serverless_or_readonly() -> bool:
+    """Detects serverless execution (Vercel, AWS Lambda) or read-only filesystem."""
+    serverless_keys = [
+        "VERCEL",
+        "VERCEL_ENV",
+        "VERCEL_REGION",
+        "AWS_LAMBDA_FUNCTION_NAME",
+        "LAMBDA_TASK_ROOT",
+        "NOW_REGION"
+    ]
+    if any(os.getenv(k) for k in serverless_keys):
+        return True
+    
+    # Probe directory write permission
+    try:
+        test_dir = BASE_DIR / "data" / ".write_probe"
+        test_dir.mkdir(parents=True, exist_ok=True)
+        test_dir.rmdir()
+        return False
+    except Exception:
+        return True
+
+IS_VERCEL = _is_serverless_or_readonly()
 
 if IS_VERCEL:
     TMP_ROOT = Path(tempfile.gettempdir()) / "researchpilot"
