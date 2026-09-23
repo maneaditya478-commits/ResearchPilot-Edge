@@ -1,0 +1,12 @@
+# ResearchPilot Edge - Local Neural Network & Snapdragon Acceleration Dependencies
+# Install these on your local Snapdragon PC for full on-device PyTorch / ONNX DirectML model execution:
+# pip install -r requirements-local.txt
+
+-r requirements.txt
+
+# Neural Network Frameworks & ONNX Hardware Execution
+torch>=2.2.0
+transformers>=4.40.0
+tokenizers>=0.19.0
+onnx>=1.16.0
+onnxruntime>=1.18.0

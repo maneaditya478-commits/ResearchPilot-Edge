@@ -227,11 +227,29 @@ To validate on a physical Snapdragon-powered HP laptop (e.g., HP OmniBook X):
 
 ## 🧪 Testing
 
-Run the comprehensive pytest suite:
+Run the comprehensive pytest suite (30 automated tests):
 ```powershell
 pytest -v
 ```
-Covers document ingestion, chunking, embeddings, FAISS vector store, device detection, inference fallback, anti-hallucination behavior, and benchmarking exports.
+Covers document ingestion, chunking, embeddings, FAISS vector store, device detection, inference fallback, anti-hallucination behavior, benchmarking exports, and FastAPI REST endpoints.
+
+---
+
+## 🌐 Deploy to Vercel (Live Cloud Demo)
+
+ResearchPilot Edge is fully configured for seamless 1-click deployment on **Vercel** via serverless FastAPI:
+
+### 1-Click / Git Deployment Steps:
+1. Push your changes to GitHub: `git push origin main`
+2. Go to [vercel.com/new](https://vercel.com/new) and import your `ResearchPilot-Edge` repository.
+3. Keep default settings (Vercel automatically detects `vercel.json` and `@vercel/python`).
+4. Click **Deploy**.
+5. Your live interactive web app & REST API will be accessible instantly at `https://your-project.vercel.app`.
+
+### REST API Documentation
+When deployed (or running locally), access the interactive OpenAPI/Swagger docs at:
+- Swagger UI: `http://localhost:8000/api/docs` (or `https://your-project.vercel.app/api/docs`)
+- ReDoc: `http://localhost:8000/api/redoc`
 
 ---
 
@@ -239,6 +257,9 @@ Covers document ingestion, chunking, embeddings, FAISS vector store, device dete
 
 ```text
 ResearchPilot-Edge/
+├── api/
+│   ├── __init__.py
+│   └── index.py (FastAPI Serverless App & Single-Page Web UI for Vercel)
 ├── app/
 │   ├── backend/ (service.py)
 │   ├── benchmarking/ (profiler.py, runner.py)
@@ -251,9 +272,12 @@ ResearchPilot-Edge/
 ├── data/ (sample_papers/, uploads/, processed/, vector_store/)
 ├── docs/ (architecture.md, model-selection.md, snapdragon-optimization.md, snapdragon-validation.md, rag-pipeline.md, benchmarking.md, privacy.md, demo-guide.md, demo-script.md)
 ├── scripts/ (benchmark.py, download_models.py, setup_demo.py, test_snapdragon.py)
-├── tests/
-├── requirements.txt
-└── run.py
+├── submission/ (Pitch Deck PPTX/PDF, Project Description DOCX/PDF)
+├── tests/ (test_api.py, test_*.py - 30 automated tests)
+├── requirements.txt (Vercel & Core Python dependencies)
+├── requirements-local.txt (Optional local PyTorch / ONNX neural dependencies)
+├── vercel.json (Vercel deployment configuration)
+└── run.py (Desktop Streamlit launcher)
 ```
 
 ---
