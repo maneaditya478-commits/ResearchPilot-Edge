@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-22 20:29:00",
+  "timestamp": "2026-09-23 12:51:19",
   "hardware": {
     "os": "Windows",
     "os_release": "11",
@@ -9,7 +9,7 @@
     "is_arm64": false,
     "is_snapdragon_detected": false,
     "total_ram_gb": 13.86,
-    "available_ram_gb": 1.86,
+    "available_ram_gb": 3.45,
     "cpu_physical_cores": 8,
     "cpu_logical_cores": 16,
     "onnx_execution_providers": [
@@ -37,26 +37,26 @@
       "total_pages_processed": 10,
       "total_chunks_created": 60,
       "total_characters": 21368,
-      "latency_ms": 1.76,
-      "throughput_pages_per_sec": 5675.6,
-      "throughput_chars_per_sec": 12127725.0,
-      "ram_delta_mb": 0.15
+      "latency_ms": 1.68,
+      "throughput_pages_per_sec": 5960.4,
+      "throughput_chars_per_sec": 12736093.2,
+      "ram_delta_mb": 0.03
     },
     "embeddings": {
       "backend": "edge_deterministic_vectorizer",
       "embedding_dimension": 384,
-      "total_texts_embedded": 12,
-      "total_latency_ms": 0.71,
-      "avg_latency_per_item_ms": 0.06,
-      "throughput_items_per_sec": 12000.0,
+      "total_texts_embedded": 20,
+      "total_latency_ms": 1.58,
+      "avg_latency_per_item_ms": 0.08,
+      "throughput_items_per_sec": 12690.8,
       "ram_delta_mb": 0.01
     },
     "vector_retrieval": {
       "total_indexed_chunks": 50,
-      "queries_executed": 3,
-      "avg_retrieval_latency_ms": 0.08,
+      "queries_executed": 5,
+      "avg_retrieval_latency_ms": 0.28,
       "min_retrieval_latency_ms": 0.05,
-      "max_retrieval_latency_ms": 0.13
+      "max_retrieval_latency_ms": 1.03
     },
     "model_loading": {
       "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
@@ -67,19 +67,19 @@
     "inference": {
       "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
       "backend_name": "Edge Synthesizer (ONNX Runtime (x86_64 SIMD CPU))",
-      "iterations": 3,
+      "iterations": 5,
       "time_to_first_token_ms": 5.0,
       "avg_latency_ms": 5.0,
-      "avg_tokens_per_sec": 13000.0,
+      "avg_tokens_per_sec": 10000.0,
       "is_hardware_accelerated": false
     },
     "end_to_end_rag": {
-      "iterations": 3,
+      "iterations": 5,
       "avg_retrieval_latency_ms": 0.0,
       "avg_inference_latency_ms": 5.0,
-      "avg_end_to_end_latency_ms": 0.84,
-      "min_latency_ms": 0.31,
-      "max_latency_ms": 1.9
+      "avg_end_to_end_latency_ms": 0.82,
+      "min_latency_ms": 0.23,
+      "max_latency_ms": 2.71
     }
   }
 }
